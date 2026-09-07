@@ -17,7 +17,7 @@ public class ItemDto {
     private String description;
 
     @NotNull(message = ERROR_AVAILABLE_EMPTY)
-    private boolean available;
+    private Boolean available;
 
     private Long requestId;
 }

@@ -27,12 +27,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto create(Long ownerId, ItemDto dto) {
         User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_USER_NOT_FOUND + ownerId));
+                .orElseThrow(() -> new NotFoundException(ERROR_USER_NOT_FOUND + ownerId));
 
         Item item = new Item();
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
-        item.setAvailable(dto.isAvailable());
+        item.setAvailable(dto.getAvailable());
         item.setOwner(owner);
         item.setRequest(null);
 
