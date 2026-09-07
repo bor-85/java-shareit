@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
-    public enum Status {WAITING, APPROVED, REJECTED, CANCELED}
+    public enum Status { WAITING, APPROVED, REJECTED, CANCELED }
 
     private Long id;
     private LocalDateTime start;
