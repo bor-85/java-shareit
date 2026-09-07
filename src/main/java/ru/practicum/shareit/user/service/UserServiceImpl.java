@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
-import java.util.Objects;
 
 import static ru.practicum.shareit.exception.UserValidationMessages.ERROR_EMAIL_ALREADY_EXISTS;
 import static ru.practicum.shareit.exception.UserValidationMessages.ERROR_USER_NOT_FOUND;
@@ -31,20 +31,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(Long id, UserDto dto) {
+    public UserDto update(Long id, UserUpdateDto dto) {
         User existing = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ERROR_USER_NOT_FOUND + id));
 
-        if (!Objects.equals(existing.getEmail(), dto.getEmail())
-                && userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalStateException(ERROR_EMAIL_ALREADY_EXISTS + dto.getEmail());
+        if (dto.getName() != null) {
+            existing.setName(dto.getName());
+        }
+        if (dto.getEmail() != null) {
+            if (!existing.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
+                throw new IllegalStateException(ERROR_EMAIL_ALREADY_EXISTS + dto.getEmail());
+            }
+            existing.setEmail(dto.getEmail());
         }
 
-        existing.setName(dto.getName());
-        existing.setEmail(dto.getEmail());
-
-        User saved = userRepository.save(existing);
-        return userMapper.toUserDto(saved);
+        return userMapper.toUserDto(userRepository.save(existing));
     }
 
     @Override

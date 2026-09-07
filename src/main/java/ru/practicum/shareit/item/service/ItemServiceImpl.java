@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static ru.practicum.shareit.exception.ItemValidationMessages.ERROR_INVALID_OWNER;
 import static ru.practicum.shareit.exception.ItemValidationMessages.ERROR_ITEM_NOT_FOUND;
 import static ru.practicum.shareit.exception.UserValidationMessages.ERROR_USER_NOT_FOUND;
 
@@ -39,17 +40,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(Long ownerId, Long itemId, ItemDto dto) {
+    public ItemDto update(Long ownerId, Long itemId, ItemUpdateDto dto) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_ITEM_NOT_FOUND + itemId));
+                .orElseThrow(() -> new NotFoundException(ERROR_ITEM_NOT_FOUND + itemId));
 
         if (item.getOwner() == null || !ownerId.equals(item.getOwner().getId())) {
-            throw new IllegalAccessError(ERROR_INVALID_OWNER);
+            // тест ожидает 404, а не 500
+            throw new NotFoundException(ERROR_ITEM_NOT_FOUND + itemId);
         }
 
-        item.setName(dto.getName());
-        item.setDescription(dto.getDescription());
-        item.setAvailable(dto.isAvailable());
+        if (dto.getName() != null) item.setName(dto.getName());
+        if (dto.getDescription() != null) item.setDescription(dto.getDescription());
+        if (dto.getAvailable() != null) item.setAvailable(dto.getAvailable());
 
         return itemMapper.toItemDto(itemRepository.save(item));
     }
