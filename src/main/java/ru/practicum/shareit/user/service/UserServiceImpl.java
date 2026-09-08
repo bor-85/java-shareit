@@ -2,6 +2,8 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.EmailDuplicatedException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
@@ -23,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalStateException(ERROR_EMAIL_ALREADY_EXISTS + dto.getEmail());
+            throw new EmailDuplicatedException(ERROR_EMAIL_ALREADY_EXISTS + dto.getEmail());
         }
         User user = userMapper.toUser(dto);
         User saved = userRepository.save(user);
@@ -33,14 +35,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(Long id, UserUpdateDto dto) {
         User existing = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_USER_NOT_FOUND + id));
+                .orElseThrow(() -> new NotFoundException(ERROR_USER_NOT_FOUND + id));
 
         if (dto.getName() != null) {
             existing.setName(dto.getName());
         }
         if (dto.getEmail() != null) {
             if (!existing.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
-                throw new IllegalStateException(ERROR_EMAIL_ALREADY_EXISTS + dto.getEmail());
+                throw new EmailDuplicatedException(ERROR_EMAIL_ALREADY_EXISTS + dto.getEmail());
             }
             existing.setEmail(dto.getEmail());
         }
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_USER_NOT_FOUND + id));
+                .orElseThrow(() -> new NotFoundException(ERROR_USER_NOT_FOUND + id));
         return userMapper.toUserDto(user);
     }
 
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_USER_NOT_FOUND + id));
+                .orElseThrow(() -> new NotFoundException(ERROR_USER_NOT_FOUND + id));
 
         userRepository.deleteById(id);
     }

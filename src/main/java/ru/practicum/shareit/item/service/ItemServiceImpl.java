@@ -29,13 +29,7 @@ public class ItemServiceImpl implements ItemService {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new NotFoundException(ERROR_USER_NOT_FOUND + ownerId));
 
-        Item item = new Item();
-        item.setName(dto.getName());
-        item.setDescription(dto.getDescription());
-        item.setAvailable(dto.getAvailable());
-        item.setOwner(owner);
-        item.setRequest(null);
-
+        Item item = itemMapper.toItem(dto, owner);
         return itemMapper.toItemDto(itemRepository.save(item));
     }
 
@@ -60,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto getById(Long itemId) {
         return itemRepository.findById(itemId)
                 .map(itemMapper::toItemDto)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_ITEM_NOT_FOUND + itemId));
+                .orElseThrow(() -> new NotFoundException(ERROR_ITEM_NOT_FOUND + itemId));
     }
 
     @Override

@@ -45,4 +45,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("message", e.getMessage()));
     }
+
+    @ExceptionHandler(EmailDuplicatedException.class)
+    public ResponseEntity<?> handleEmailAlreadyUsed(EmailDuplicatedException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new EmailDuplicatedException(e.getMessage()));
+    }
 }
