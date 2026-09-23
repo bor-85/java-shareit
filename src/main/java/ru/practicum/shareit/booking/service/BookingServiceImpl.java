@@ -179,7 +179,10 @@ public class BookingServiceImpl implements BookingService {
         if (!start.isBefore(end)) {
             throw new ValidationException(ERROR_BOOKING_DATE_ORDER);
         }
-        if (!start.isAfter(LocalDateTime.now())) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (!start.isAfter(now) && !end.isBefore(now)) {
             throw new ValidationException(ERROR_BOOKING_START_IN_FUTURE);
         }
     }
