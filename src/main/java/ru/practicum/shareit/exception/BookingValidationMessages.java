@@ -14,5 +14,6 @@ public class BookingValidationMessages {
     public static final String ERROR_ITEM_NOT_AVAILABLE = "Вещь недоступна для бронирования";
 
     public static final String ERROR_ONLY_WAITING_CAN_BE_APPROVED = "Подтвердить или отклонить можно только ожидающее бронирование";
+    public static final String ERROR_ONLY_OWNER_CAN_APPROVE = "Подтвердить или отклонить бронирование может только владелец вещи";
     public static final String ERROR_UNKNOWN_STATE = "Неизвестный state: ";
 }

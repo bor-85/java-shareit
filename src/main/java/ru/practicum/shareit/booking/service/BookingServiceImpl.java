@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
@@ -73,9 +74,12 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException(ERROR_BOOKING_NOT_FOUND + bookingId));
 
         if (booking.getItem() == null
-                || booking.getItem().getOwner() == null
-                || !Objects.equals(booking.getItem().getOwner().getId(), ownerId)) {
+                || booking.getItem().getOwner() == null) {
             throw new NotFoundException(ERROR_BOOKING_NOT_FOUND + bookingId);
+        }
+
+        if (!Objects.equals(booking.getItem().getOwner().getId(), ownerId)) {
+            throw new ForbiddenException(ERROR_ONLY_OWNER_CAN_APPROVE);
         }
 
         if (booking.getStatus() != Booking.Status.WAITING) {

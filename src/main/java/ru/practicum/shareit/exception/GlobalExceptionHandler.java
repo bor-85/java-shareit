@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,5 +48,12 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleInternalServerError(Exception e) {
         String errorMessage = (e != null && e.getMessage() != null) ? e.getMessage() : "Произошла внутренняя ошибка сервера";
         return Map.of("error", errorMessage);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> handleForbidden(ForbiddenException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", e.getMessage()));
     }
 }
