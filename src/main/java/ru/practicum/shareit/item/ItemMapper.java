@@ -5,6 +5,8 @@ import ru.practicum.shareit.item.model.Item;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.List;
+
 @Component
 public class ItemMapper {
 
@@ -15,6 +17,9 @@ public class ItemMapper {
         dto.setDescription(item.getDescription());
         dto.setAvailable(item.isAvailable());
         dto.setRequestId(item.getRequest() != null ? item.getRequest().getId() : null);
+        dto.setComments(List.of());
+        dto.setLastBooking(null);
+        dto.setNextBooking(null);
         return dto;
     }
 
@@ -22,7 +27,7 @@ public class ItemMapper {
         Item item = new Item();
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
-        item.setAvailable(dto.getAvailable());
+        item.setAvailable(dto.getAvailable() != null && dto.getAvailable());
         item.setRequest(null);
         return item;
     }
