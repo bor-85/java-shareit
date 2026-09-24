@@ -144,15 +144,12 @@ public class BookingServiceImpl implements BookingService {
         return switch (state) {
             case STATE_ALL -> true;
 
-            case STATE_CURRENT -> booking.getStatus() == Booking.Status.APPROVED
-                    && !booking.getStart().isAfter(now)
+            case STATE_CURRENT -> !booking.getStart().isAfter(now)
                     && !booking.getEnd().isBefore(now);
 
-            case STATE_PAST -> booking.getStatus() == Booking.Status.APPROVED
-                    && booking.getEnd().isBefore(now);
+            case STATE_PAST -> booking.getEnd().isBefore(now);
 
-            case STATE_FUTURE -> booking.getStatus() == Booking.Status.APPROVED
-                    && booking.getStart().isAfter(now);
+            case STATE_FUTURE -> booking.getStart().isAfter(now);
 
             case STATE_WAITING -> booking.getStatus() == Booking.Status.WAITING;
 
@@ -179,10 +176,7 @@ public class BookingServiceImpl implements BookingService {
         if (!start.isBefore(end)) {
             throw new ValidationException(ERROR_BOOKING_DATE_ORDER);
         }
-
-        LocalDateTime now = LocalDateTime.now();
-
-        if (!start.isAfter(now) && !end.isBefore(now)) {
+        if (!start.isAfter(LocalDateTime.now())) {
             throw new ValidationException(ERROR_BOOKING_START_IN_FUTURE);
         }
     }
