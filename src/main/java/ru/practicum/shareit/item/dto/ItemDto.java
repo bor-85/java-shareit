@@ -3,6 +3,9 @@ package ru.practicum.shareit.item.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
+
+import java.util.List;
 
 import static ru.practicum.shareit.exception.ItemValidationMessages.*;
 
@@ -20,4 +23,8 @@ public class ItemDto {
     private Boolean available;
 
     private Long requestId;
+
+    private List<CommentDto> comments;
+    private BookingShortDto lastBooking;
+    private BookingShortDto nextBooking;
 }
