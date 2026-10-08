@@ -7,12 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.item.dto.CommentCreateDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.booking.dto.BookingShortDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,13 +68,7 @@ class ItemControllerTest {
 
     @Test
     void createItemShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "name": "",
-                  "description": "",
-                  "available": null
-                }
-                """;
+        String json = "{\"name\":\"\",\"description\":\"\",\"available\":null}";
 
         mockMvc.perform(post("/items")
                         .header(USER_HEADER, 1L)
@@ -183,11 +177,7 @@ class ItemControllerTest {
 
     @Test
     void addCommentShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "text": " "
-                }
-                """;
+        String json = "{\"text\":\" \"}";
 
         mockMvc.perform(post("/items/{itemId}/comment", 1L)
                         .header(USER_HEADER, 1L)

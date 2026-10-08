@@ -61,12 +61,7 @@ class UserControllerTest {
 
     @Test
     void createUserShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "name": "",
-                  "email": "wrong-email"
-                }
-                """;
+        String json = "{\"name\":\"\",\"email\":\"wrong-email\"}";
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
