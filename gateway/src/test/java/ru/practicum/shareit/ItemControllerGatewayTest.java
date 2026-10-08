@@ -75,13 +75,7 @@ class ItemControllerGatewayTest {
 
     @Test
     void createItemShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "name": "",
-                  "description": "",
-                  "available": null
-                }
-                """;
+        String json = "{\"name\":\"\",\"description\":\"\",\"available\":null}";
 
         mockMvc.perform(post("/items")
                         .header(USER_HEADER, 1L)
@@ -198,11 +192,7 @@ class ItemControllerGatewayTest {
 
     @Test
     void addCommentShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "text": " "
-                }
-                """;
+        String json = "{\"text\":\" \"}";
 
         mockMvc.perform(post("/items/{itemId}/comment", 1L)
                         .header(USER_HEADER, 1L)

@@ -72,13 +72,7 @@ class BookingControllerGatewayTest {
 
     @Test
     void createBookingShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "itemId": null,
-                  "start": null,
-                  "end": null
-                }
-                """;
+        String json = "{\"itemId\":null,\"start\":null,\"end\":null}";
 
         mockMvc.perform(post("/bookings")
                         .header(USER_HEADER, 1L)

@@ -73,11 +73,7 @@ class RequestControllerGatewayTest {
 
     @Test
     void createRequestShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "description": " "
-                }
-                """;
+        String json = "{\"description\":\" \"}";
 
         mockMvc.perform(post("/requests")
                         .header(USER_HEADER, 1L)

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.exception.GatewayExceptionHandler;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @Import(GatewayExceptionHandler.class)
+@ContextConfiguration(classes = ShareItGateway.class)
 class UserControllerGatewayTest {
 
     @Autowired
@@ -56,7 +59,7 @@ class UserControllerGatewayTest {
                 .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(response));
 
         mockMvc.perform(post("/users")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
@@ -68,15 +71,10 @@ class UserControllerGatewayTest {
 
     @Test
     void createUserShouldReturnBadRequestForInvalidBody() throws Exception {
-        String json = """
-                {
-                  "name": "",
-                  "email": "wrong-email"
-                }
-                """;
+        String json = "{\"name\":\"\",\"email\":\"wrong-email\"}";
 
         mockMvc.perform(post("/users")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").exists());
@@ -99,7 +97,7 @@ class UserControllerGatewayTest {
                 .thenReturn(ResponseEntity.ok(response));
 
         mockMvc.perform(patch("/users/{userId}", 1L)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
